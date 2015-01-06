@@ -1,71 +1,115 @@
 import requests
+import bx
 
 
 class Catalog():
+    '''A wrapper over the Udacity Catalog API.'''
+
     def __init__(self):
-        self.options = {
-            'url': 'https://www.udacity.com/public-api/v0/courses \
-                    ?projection=internal'
-        }
+        '''Creates a new catalog to interact with.'''
+
+        self.cache = bx.Db()
+        self.url = 'https://www.udacity.com/public-api/v0/courses?projection=internal'
+
+    def clear(self):
+        '''Clear all stored catalog data.'''
+
+        self.cache.clear()
 
     def __get(self):
-        catalog = None  # need to find or make caching library
+        '''
+        Get and cache catalog data from Udacity's website.
 
-        if catalog:
-            return catalog
-        else:
-            req = requests.get(self.options['url'])
+        Returns:
+            dict: The entire course catalog
 
-            if req.status_code is 404:
-                raise Exception('404 page not found')
-            elif req.status_code is 500:
-                raise Exception('500 server error')
-            else:
-                # put in cache
-                return req.json()
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+        '''
 
-    def catalog(self):
         try:
-            data = self.__get()
+            return self.cache.get('catalog')
+        except KeyError:
+            req = requests.get(self.url)
+            req.raise_for_status()
+
+            data = req.json()
+            self.cache.put('catalog', data, timeout=60000)
             return data
-        except:
-            return None
+
+    def all(self):
+        '''
+        Get the entire catalog.
+
+        Returns:
+            dict: The entire catalog
+
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+        '''
+
+        data = self.__get()
+        return data
 
     def courses(self):
-        try:
-            data = self.__get()
-            return data.get('courses')
-        except:
-            return None
+        '''
+        Get the courses portion of the catalog.
+
+        Returns:
+            list of dict: All course data
+
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+        '''
+
+        data = self.__get()
+        return data.get('courses')
 
     def course(self, key):
-        try:
-            data = self.__get()
-            if 'courses' in data:
-                return [x for x in data['courses'] if x['key'] == key][0]
-        except:
-            return None
+        '''
+        Get the data for one course.
+
+        Args:
+            key (str): The course ID
+
+        Returns:
+            dict: The course data
+
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+            IndexError: If no course that matches the key is found
+        '''
+
+        data = self.__get()
+        return [x for x in data['courses'] if x['key'] == key][0]
 
     def instructors(self, key):
-        try:
-            data = self.course(key)
-            return data.get('instructors')
-        except:
-            return None
+        '''
+        Get instructor information for a course.
 
-cat = Catalog()
-x = cat.catalog()
-print(x['tracks'])
+        Args:
+            key (str): The course ID
 
+        Returns:
+            list of dict: Info on each instructor in the course
 
-c = cat.courses()
-print(c[0]['key'])
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+        '''
 
-d = cat.course('cs191')
-print(d)
+        data = self.course(key)
+        return data.get('instructors')
 
-d = cat.course('cs101')
-print(d)
+    def tracks(self):
+        '''
+        Get all tracks.
 
-e = cat.instructors('cs11')
-print(e)
+        Returns:
+            list of dict: All tracks
+
+        Raises:
+            requests.exceptions.HTTPError: If page is not found or server error
+        '''
+
+        data = self.__get()
+        return data.get('tracks')
