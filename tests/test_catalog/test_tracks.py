@@ -7,4 +7,5 @@ def test():
 
     catalog = udacity.Catalog()
     assert type(catalog.tracks()) is list
-    assert type(catalog.tracks()[0]['name']) is str
+    tracks = catalog.tracks()
+    assert tracks[0].get('name') is not None
