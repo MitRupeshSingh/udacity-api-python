@@ -29,3 +29,7 @@ a lot of users.
 ### Installation
 
 It's on pip! Or rather, it will be on pip. It's still in development as of now.
+
+### API
+
+Documentation coming soon!
