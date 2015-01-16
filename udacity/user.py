@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 import requests
 import json
 import bx
@@ -205,4 +206,19 @@ class User():
             IndexError: If user is not enrolled in the requested course
         '''
 
-        
+        def get_course_progress():
+            req = self.session.get(self.urls['node_prog'] % key)
+            req.raise_for_status()
+
+            course_progress = json.loads(req.text[4:])['nodestates'][0]
+
+            most_recent_page = course_progres['last_interactions'].sort(key=lambda i: dt.strptime(i.time, '%Y-%m-%dT%H:%M:%S.%fZ'))[0]
+
+        try:
+            return self.cache.get(key)
+        except KeyError:
+            courses = self.enrollments()
+            if key not in courses:
+                raise IndexError('User not enrolled in course ' + str(key))
+            else:
+                return get_course_progress()
