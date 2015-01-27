@@ -20,4 +20,4 @@ def test_correct():
             'password': 'password123'
         }
     })
-    assert type(user.cache) is bx.Db
+    assert type(user.cache) == bx.Db
