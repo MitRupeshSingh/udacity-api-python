@@ -8,21 +8,21 @@ def test_key():
     '''Tests User.key'''
 
     user = udacity.User(USER, PW)
-    assert type(user.key()) == str
+    assert type(user.key()) is str or unicode
 
 
 def test_name():
     '''Tests User.name'''
 
     user = udacity.User(USER, PW)
-    assert type(user.name()) == str
+    assert type(user.name()) is str or unicode
 
 
 def test_nickname():
     '''Tests User.nickname'''
 
     user = udacity.User(USER, PW)
-    assert type(user.nickname()) == str
+    assert type(user.nickname()) is str or unicode
 
 
 def test_email():
