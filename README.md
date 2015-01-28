@@ -2,6 +2,8 @@
 
 **by Ty-Lucas Kelley**
 
+![build-status](https://travis-ci.org/tylucaskelley/udacity-api-python.svg?branch=master)
+
 ---
 
     ##  ##   #####     ####     #####   ######   ######   ##  ##
