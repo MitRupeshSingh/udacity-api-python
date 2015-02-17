@@ -18,7 +18,8 @@ config = {
     'install_requires': [
         'bx',
         'nose',
-        'requests'
+        'requests',
+        'dateutil'
     ],
     'packages': [
         'udacity'

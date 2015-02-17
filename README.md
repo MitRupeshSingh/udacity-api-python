@@ -30,8 +30,24 @@ a lot of users.
 
 ### Installation
 
-It's on pip! Or rather, it will be on pip. It's still in development as of now.
+It's on pip! Install it from the terminal, with Python 2 or 3:
 
-### API
+    $ pip install udacity-api
 
-Documentation coming soon!
+You can then include it in your application:
+
+    import udacity
+
+### User
+
+The `User` class is used to view a user's account info and see their progress in courses.
+It includes a lot of convenience functions.
+
+Docs coming soon!
+
+### Catalog
+
+The `Catalog` class can be used to filter data from Udacity's Catalog API. It has
+plenty of convenience functions.
+
+Docs coming soon!

@@ -6,5 +6,8 @@
 
 ### To-Do
 
-* Write User class and tests
-* Document all classes and functions in README.md
+* Feature wishlist for v2:
+    * Edit account preferences / settings
+    * More convenience functions for Catalog
+    * Add progress in all lessons, not just most recent
+    * Add function for getting info about any node
