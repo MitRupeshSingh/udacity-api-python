@@ -1,4 +1,5 @@
-from datetime import datetime as dt
+import dateutil.parser
+import datetime
 import requests
 import json
 import bx
@@ -31,7 +32,7 @@ class User():
             'auth': 'https://www.udacity.com/api/session',
             'account': 'https://www.udacity.com/api/users/me',
             'node_prog': 'https://www.udacity.com/api/nodes/%s/state?fresh=true',
-            'node_info': 'https://www.udacity.com/api/nodes?keys%5B%5D=%s',
+            'node_info': 'https://www.udacity.com/api/nodes?keys%5B%5D=',
             'classroom': 'https://www.udacity.com/course/viewer#!/'
         }
 
@@ -206,13 +207,82 @@ class User():
             IndexError: If user is not enrolled in the requested course
         '''
 
-        def get_course_progress():
+        def get_lesson_info(course_data):
+            req = self.session.get(self.urls['node_info'] + course_data['current_lesson']['key'])
+            req.raise_for_status()
+
+            lesson_info = json.loads(req.text[4:])['references']['Node'][course_data['current_lesson']['key']]
+            course_data['current_lesson']['quiz_count'] = lesson_info['_synopsis']['quiz_count']
+            course_data['current_lesson']['morsel_count'] = lesson_info['_synopsis']['morsel_count']
+
+            self.cache.put(key, course_data)
+            return course_data
+
+        def get_lesson_progress(course_data):
+            req = self.session.get(self.urls['node_prog'] % course_data['current_lesson']['key'])
+            req.raise_for_status()
+
+            lesson_progress = json.loads(req.text[4:])['nodestates'][0]
+            course_data['current_lesson']['quizzes_completed'] = lesson_progress['completed_quiz_count']
+            course_data['current_lesson']['morsels_completed'] = lesson_progress['completed_morsel_count']
+            course_data['current_lesson']['completed'] = lesson_progress['node_completed']
+
+            return get_lesson_info(course_data)
+
+        def get_course_info(course_data):
+            req = self.session.get(self.urls['node_info'] + key)
+            req.raise_for_status()
+
+            course_info = json.loads(req.text[4:])['references']['Node'][key]
+            course_data['title'] = course_info['title']
+            course_data['quiz_count'] = course_info['_synopsis']['quiz_count']
+            course_data['morsel_count'] = course_info['_synopsis']['morsel_count']
+
+            return get_lesson_progress(course_data)
+
+        def get_course_progress(course_data):
             req = self.session.get(self.urls['node_prog'] % key)
             req.raise_for_status()
 
+            last_lesson = last_exam = last_course = last_morsel = last_lesson_key = None
             course_progress = json.loads(req.text[4:])['nodestates'][0]
+            last_interactions = course_progress['last_interactions']
+            most_recent_page = max(last_interactions, key=lambda i: i['time'])
+            last_visited = dateutil.parser.parse(most_recent_page['time'])
+            now = datetime.datetime.now(dateutil.tz.tzutc())
 
-            most_recent_page = course_progres['last_interactions'].sort(key=lambda i: dt.strptime(i.time, '%Y-%m-%dT%H:%M:%S.%fZ'))[0]
+            course_data['completed'] = course_progress['node_completed']
+            course_data['quizzes_completed'] = course_progress['completed_quiz_count']
+            course_data['morsels_completed'] = course_progress['completed_morsel_count']
+            course_data['time_away_ms'] = (now - last_visited).seconds * 1000
+
+            content = most_recent_page['content_context']
+            for item in content:
+                k = item['node_ref']['key']
+                tag = item['tag']
+                if tag == 'c-':
+                    last_course = tag + k
+                elif tag == 'l-':
+                    last_lesson_key = k
+                    last_lesson = '/l-' + k
+                elif tag == 'e-':
+                    last_exam = '/e-' + k
+                elif tag == 'm-':
+                    last_morsel = '/m-' + k
+                else:
+                    raise requests.exceptions.HTTPError('unrecognized URL')
+
+            course_data['most_recent_url'] = self.urls['classroom'] + last_course + last_lesson
+
+            if last_exam:
+                course_data['most_recent_url'] += last_exam
+
+            course_data['most_recent_url'] += last_morsel
+            course_data['current_lesson'] = {
+                'key': last_lesson_key
+            }
+
+            return get_course_info(course_data)
 
         try:
             return self.cache.get(key)
@@ -221,4 +291,8 @@ class User():
             if key not in courses:
                 raise IndexError('User not enrolled in course ' + str(key))
             else:
-                return get_course_progress()
+                course_data = {
+                    'key': key
+                }
+
+                return get_course_progress(course_data)

@@ -7,7 +7,7 @@ def test_cs101():
 
     catalog = udacity.Catalog()
     assert type(catalog.course('cs101')) is dict
-    assert len(catalog.course('cs101')) == 28
+    assert len(catalog.course('cs101')) == 29
     assert catalog.course('cs101').get('key') == 'cs101'
 
 
