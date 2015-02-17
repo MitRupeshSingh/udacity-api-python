@@ -34,7 +34,7 @@ class Catalog():
             req.raise_for_status()
 
             data = req.json()
-            self.cache.put('catalog', data, timeout=60000)
+            self.cache.put('catalog', data)
             return data
 
     def all(self):

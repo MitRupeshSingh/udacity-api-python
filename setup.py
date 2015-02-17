@@ -7,14 +7,14 @@ except ImportError:
 
 config = {
     'name': 'udacity',
-    'version': '1.0.1',
+    'version': '1.1.0',
     'description': 'Library for interacting with Udacity account data and course progress',
     'long_description': open('README.md').read(),
     'author': 'Ty-Lucas Kelley',
     'author_email': 'tylucaskelley@gmail.com',
     'license': 'MIT',
     'url': 'https://github.com/tylucaskelley/udacity-api-python',
-    'download_url': 'https://github.com/tylucaskelley/udacity-api-python/tarball/v1.0.1',
+    'download_url': 'https://github.com/tylucaskelley/udacity-api-python/tarball/v1.1.0',
     'install_requires': [
         'bx',
         'nose',

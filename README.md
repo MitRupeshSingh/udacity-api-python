@@ -3,6 +3,8 @@
 **by Ty-Lucas Kelley**
 
 ![build-status](https://travis-ci.org/tylucaskelley/udacity-api-python.svg?branch=master)
+![version](https://pypip.in/version/udacity/badge.svg)
+![downloads](https://pypip.in/download/udacity/badge.svg)
 
 ---
 
@@ -43,11 +45,41 @@ You can then include it in your application:
 The `User` class is used to view a user's account info and see their progress in courses.
 It includes a lot of convenience functions.
 
-Docs coming soon!
+Run `pydoc udacity.User` for information about each method and what it returns.
+
+Example usage:
+
+```py
+import udacity
+
+user = udacity.User('email@example.com', 'password123')
+name = user.name()
+
+# print out quiz completion rate in each course
+for course in user.enrollments():
+    prog = user.progress(course)
+    print('Course: ' + prog['title'])
+    print('\t' + str(prog['quizzes_completed']) + '/'
+            + str(prog['quiz_count']) + ' quizzes completed')
+```
 
 ### Catalog
 
 The `Catalog` class can be used to filter data from Udacity's Catalog API. It has
 plenty of convenience functions.
 
-Docs coming soon!
+Run `pydoc udacity.Catalog` for information about each method and what it returns.
+
+Example usage:
+
+```py
+import udacity
+
+c = udacity.Catalog()
+
+tracks = c.tracks()
+
+track_names = [t['name'] for t in tracks]
+web_dev_teachers = c.instructors('cs253')
+nd001_description = c.degree('nd001')['expected_learning']
+```
