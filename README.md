@@ -32,7 +32,7 @@ a lot of users.
 
 It's on pip! Install it from the terminal, with Python 2 or 3:
 
-    $ pip install udacity-api
+    $ pip install udacity
 
 You can then include it in your application:
 
