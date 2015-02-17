@@ -10,25 +10,24 @@ def test_progress():
     user = udacity.User(USER, PW)
     prog = user.progress('cs101')
     assert type(prog) is dict
+    assert type(prog['current_lesson']) is dict
 
     keys = [
-        'title',
         'key',
-        'completed',
-        'current_lesson',
-        'morsel_count',
-        'last_visited',
-        'morsels_completed',
-        'most_recent_url',
+        'title',
         'quiz_count',
+        'morsel_count',
+        'completed',
         'quizzes_completed',
-        'time_away_ms'
+        'morsels_completed',
+        'last_visited',
+        'time_away_ms',
+        'most_recent_url',
+        'current_lesson'
     ]
 
     for k in keys:
         assert k in prog
-
-    assert type(prog['current_lesson']) is dict
 
 
 def test_progress_malformed():

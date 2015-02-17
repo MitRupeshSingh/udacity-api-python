@@ -254,6 +254,7 @@ class User():
             course_data['completed'] = course_progress['node_completed']
             course_data['quizzes_completed'] = course_progress['completed_quiz_count']
             course_data['morsels_completed'] = course_progress['completed_morsel_count']
+            course_data['last_visited'] = last_visited.isoformat()
             course_data['time_away_ms'] = (now - last_visited).seconds * 1000
 
             content = most_recent_page['content_context']
