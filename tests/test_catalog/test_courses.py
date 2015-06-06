@@ -8,7 +8,7 @@ def test_courses():
     catalog = udacity.Catalog()
     courses = catalog.courses()
     assert type(courses) is list
-    assert len(courses[0]) == 29
+    assert len(courses[0]) == 34
 
     keys = [
         'instructors',
