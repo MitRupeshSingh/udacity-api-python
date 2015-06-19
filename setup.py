@@ -14,7 +14,7 @@ config = {
     'author_email': 'tylucaskelley@gmail.com',
     'license': 'MIT',
     'url': 'https://github.com/tylucaskelley/udacity-api-python',
-    'download_url': 'https://github.com/tylucaskelley/udacity-api-python/tarball/v1.1.0',
+    'download_url': 'https://github.com/tylucaskelley/udacity-api-python/tarball/v1.1.1',
     'install_requires': [
         'bx',
         'nose',
