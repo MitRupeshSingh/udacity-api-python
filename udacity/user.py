@@ -247,6 +247,10 @@ class User():
             last_lesson = last_exam = last_course = last_morsel = last_lesson_key = None
             course_progress = json.loads(req.text[4:])['nodestates'][0]
             last_interactions = course_progress['last_interactions']
+
+            if not last_interactions:
+                return {}
+
             most_recent_page = max(last_interactions, key=lambda i: i['time'])
             last_visited = dateutil.parser.parse(most_recent_page['time'])
             now = datetime.datetime.now(dateutil.tz.tzutc())

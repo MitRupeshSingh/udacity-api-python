@@ -35,3 +35,11 @@ def test_progress_malformed():
 
     user = udacity.User(USER, PW)
     assert_raises(IndexError, user.progress, 'aaaaaaa')
+
+
+def test_progrss_unenrolled():
+    '''Tests User.progress when user is enrolled with no progress.'''
+
+    user = udacity.User(USER, PW)
+    progress = user.progress('ud867')
+    assert_dict_equal({}, progress)
