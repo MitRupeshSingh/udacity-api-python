@@ -7,7 +7,7 @@ except ImportError:
 
 config = {
     'name': 'udacity',
-    'version': '1.1.0',
+    'version': '1.1.1',
     'description': 'Library for interacting with Udacity account data and course progress',
     'long_description': open('README.md').read(),
     'author': 'Ty-Lucas Kelley',
